@@ -5,7 +5,7 @@ import com.elshamy.cartify.dtos.ProductDTO;
 import java.util.List;
 
 public interface IProductService {
-    ProductDTO.ProductResponse getProduct(Long id);
+    ProductDTO.ProductResponse getProductById(Long id);
 
     ProductDTO.ProductResponse addProduct(ProductDTO.CreateProductRequest product);
 
@@ -13,7 +13,7 @@ public interface IProductService {
 
     void deleteProduct(Long id);
 
-    List<ProductDTO.ProductResponse> getProducts();
+    List<ProductDTO.ProductResponse> getAllProducts();
 
     List<ProductDTO.ProductResponse> getProductByCategory(Long categoryId);
 
