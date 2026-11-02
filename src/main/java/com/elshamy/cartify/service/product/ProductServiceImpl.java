@@ -20,7 +20,7 @@ public class ProductServiceImpl implements IProductService {
 
 
     @Override
-    public ProductDTO.ProductResponse getProduct(Long id) {
+    public ProductDTO.ProductResponse getProductById(Long id) {
         var product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         return ProductDTO.ProductResponse.from(product);
     }
@@ -84,12 +84,15 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public List<ProductDTO.ProductResponse> getProducts() {
+    public List<ProductDTO.ProductResponse> getAllProducts() {
         return productRepository.findAll().stream().map(ProductDTO.ProductResponse::from).toList();
     }
 
     @Override
     public List<ProductDTO.ProductResponse> getProductByCategory(Long categoryId) {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new ResourceNotFoundException("Category not found with id: " + categoryId);
+        }
         return productRepository.findByCategoryId(categoryId).stream().map(ProductDTO.ProductResponse::from).toList();
     }
 
