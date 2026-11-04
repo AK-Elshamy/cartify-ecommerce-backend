@@ -3,30 +3,27 @@ package com.elshamy.cartify.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Blob;
-
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Image {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     private String fileName;
 
     private String fileType;
 
-    @Lob
-    private Blob image;
+    private Long fileSize;
 
     private String downloadUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 }
