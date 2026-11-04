@@ -13,8 +13,8 @@ import java.util.List;
 @Builder
 public class Category {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
 
     private String name;
