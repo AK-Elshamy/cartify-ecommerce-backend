@@ -47,11 +47,27 @@ public class ImageServiceImpl implements IImageService {
 
     @Override
     public List<ImageDTO.ImageResponseDTO> getImagesByProductId(Long productId) {
-        return List.of();
+        getProductById(productId); // ensure product exists
+        var images = imageRepository.findByProductId(productId);
+        return images.stream().map(ImageDTO.ImageResponseDTO::from).toList();
     }
 
     @Override
     public void deleteImage(Long imageId) {
+        var image = imageRepository.findById(imageId).orElseThrow(
+                () -> new ResourceNotFoundException("Image with id: " + imageId + " not found")
+        );
+        localStorageService.delete(image.getFileName());
+        imageRepository.delete(image);
+    }
 
+    @Override
+    public ImageFile loadImage(Long imageId) {
+        var image = imageRepository.findById(imageId).orElseThrow(
+                () -> new ResourceNotFoundException("Image with id: " + imageId + " not found")
+        );
+        ImageFile response = new ImageFile(localStorageService.loadAsResource(image.getFileName()),
+                image.getFileType());
+        return response;
     }
 }
