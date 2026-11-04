@@ -12,4 +12,7 @@ public interface IImageService {
     List<ImageDTO.ImageResponseDTO> getImagesByProductId(Long productId);
 
     void deleteImage(Long imageId);
+
+    ImageFile loadImage(Long imageId);
+
 }

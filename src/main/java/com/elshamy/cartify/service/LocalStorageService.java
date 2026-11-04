@@ -1,6 +1,9 @@
 package com.elshamy.cartify.service;
 
+import com.elshamy.cartify.exception.StorageFileNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,6 +60,33 @@ public class LocalStorageService {
         } catch (IOException exception) {
             throw new RuntimeException("Could not store file", exception);
         }
+    }
+
+    public void delete(String fileName) {
+        Path filePath = uploadDirectory.resolve(fileName).normalize();
+
+        if (!filePath.startsWith(uploadDirectory)) {
+            throw new IllegalArgumentException("Invalid file path");
+        }
+
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException exception) {
+            throw new RuntimeException("Could not delete file", exception);
+        }
+    }
+
+    public Resource loadAsResource(String fileName) {
+        Path filePath = uploadDirectory.resolve(fileName).normalize();
+
+        if (!filePath.startsWith(uploadDirectory)) {
+            throw new IllegalArgumentException("Invalid file path");
+        }
+
+        if (!Files.exists(filePath)) {
+            throw new StorageFileNotFoundException("File not found in storage" + fileName);
+        }
+        return new FileSystemResource(filePath);
     }
 
     private void validateFile(MultipartFile file) {
