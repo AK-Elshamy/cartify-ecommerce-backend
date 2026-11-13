@@ -42,8 +42,10 @@ public class Cart {
         if (this.user != null && this.user != user) {
             this.user.setCart(null);
         }
+
         this.user = user;
-        if (user != null && user.getCart() != null) {
+
+        if (user != null && user.getCart() != this) {
             user.setCart(this);
         }
     }

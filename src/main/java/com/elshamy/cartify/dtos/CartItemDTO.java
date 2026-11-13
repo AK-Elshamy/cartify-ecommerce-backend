@@ -1,5 +1,6 @@
 package com.elshamy.cartify.dtos;
 
+import com.elshamy.cartify.model.CartItem;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
@@ -104,12 +105,21 @@ public final class CartItemDTO {
             @JsonProperty("id") Long id,
             @JsonProperty("quantity") int quantity,
             @JsonProperty("unitPrice") BigDecimal unitPrice,
-            @JsonProperty("product") ProductDTO.ProductResponse product
+            @JsonProperty("product") ProductDTO.ProductSummaryResponse product
     ) {
         public CartItemDetailResponse {
             if (unitPrice != null) {
                 unitPrice = unitPrice.setScale(2, RoundingMode.HALF_UP);
             }
+        }
+
+        public static CartItemDetailResponse from(CartItem item) {
+            return new CartItemDetailResponse(
+                    item.getId(),
+                    item.getQuantity(),
+                    item.getUnitPrice(),
+                    ProductDTO.ProductSummaryResponse.from(item.getProduct())
+            );
         }
 
         @JsonProperty("totalPrice")
