@@ -76,6 +76,22 @@ public class ProductDTO {
     ) {
     }
 
+    public record ProductSummaryResponse(
+            Long id,
+            String name,
+            BigDecimal price,
+            String brand
+    ) {
+        public static ProductSummaryResponse from(Product product) {
+            return new ProductSummaryResponse(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    product.getBrand()
+            );
+        }
+    }
+
     public record ProductResponse(
             Long id,
             String name,

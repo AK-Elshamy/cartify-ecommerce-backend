@@ -1,5 +1,7 @@
 package com.elshamy.cartify.dtos;
 
+import com.elshamy.cartify.model.Cart;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -18,6 +20,16 @@ public final class CartDTO {
     ) {
         public CartResponse {
             items = items != null ? List.copyOf(items) : List.of();
+        }
+
+        public static CartResponse from(Cart cart) {
+            return new CartResponse(
+                    cart.getId(),
+                    cart.getItems().stream()
+                            .map(CartItemDTO.CartItemDetailResponse::from)
+                            .toList(),
+                    cart.getTotalPrice()
+            );
         }
 
         public int itemCount() {
