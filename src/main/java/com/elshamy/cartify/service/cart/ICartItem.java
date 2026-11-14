@@ -5,12 +5,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ICartItem {
-    CartItemDTO.CartItemResponse addItem(CartItemDTO.AddItemRequest addItemRequest);
 
-    CartItemDTO.CartItemResponse updateItemQuantity(Long productId, CartItemDTO.UpdateQuantityRequest updateItemQuantityRequest);
+    CartItemDTO.CartItemDetailResponse addItem(
+            Long userId,
+            CartItemDTO.AddItemRequest request
+    );
 
-    void removeItem(Long CartItemId);
+    CartItemDTO.CartItemDetailResponse updateItemQuantity(
+            Long userId,
+            Long productId,
+            CartItemDTO.UpdateQuantityRequest request
+    );
 
-    Page<CartItemDTO.CartItemDetailResponse> getItems(Long cartId, Pageable pageable);
+    void removeItem(Long userId, Long productId);
 
+    Page<CartItemDTO.CartItemDetailResponse> getItems(
+            Long userId,
+            Pageable pageable
+    );
 }

@@ -1,6 +1,7 @@
 package com.elshamy.cartify.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,48 @@ public class GlobalException {
         return ResponseEntity
                 .badRequest()
                 .body(response);
+    }
+
+    // InsufficientStockException
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientStockException(
+            InsufficientStockException exception,
+            HttpServletRequest request
+    ) {
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        var response = ErrorResponse.from(
+                status,
+                exception.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(response);
+    }
+
+    // ConstraintViolationException
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(
+            ConstraintViolationException exception,
+            HttpServletRequest request
+    ) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        String errorMessage = exception.getConstraintViolations().stream()
+                .map(violation -> {
+                    String path = violation.getPropertyPath().toString();
+                    String paramName = path.substring(path.lastIndexOf('.') + 1);
+                    return paramName + ": " + violation.getMessage();
+                })
+                .collect(Collectors.joining(", "));
+
+        var response = ErrorResponse.from(
+                status,
+                errorMessage,
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(response);
     }
 
     // Missing or malformed request body -> 400
