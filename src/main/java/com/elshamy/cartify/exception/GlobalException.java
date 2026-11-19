@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,6 +18,39 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalException {
+    // Wrong email or password during login -> 401
+    @ExceptionHandler({BadCredentialsException.class, AuthenticationException.class})
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(
+            AuthenticationException exception,
+            HttpServletRequest request) {
+
+        var response = ErrorResponse.from(
+                HttpStatus.UNAUTHORIZED,
+                "Invalid email or password",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(response);
+    }
+
+    // Authenticated user lacks permission (@PreAuthorize) -> 403
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(
+            AccessDeniedException exception,
+            HttpServletRequest request) {
+
+        var response = ErrorResponse.from(
+                HttpStatus.FORBIDDEN,
+                "You do not have permission to access this resource",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(response);
+    }
 
     // Resource not found -> 404
     @ExceptionHandler(ResourceNotFoundException.class)
