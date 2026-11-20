@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -44,6 +45,12 @@ public class User implements UserDetails {
             fetch = FetchType.LAZY
     )
     private Cart cart;
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Address> addresses = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -53,5 +60,15 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public void addAddress(Address address) {
+        addresses.add(address);
+        address.setUser(this);
+    }
+
+    public void removeAddress(Address address) {
+        addresses.remove(address);
+        address.setUser(null);
     }
 }

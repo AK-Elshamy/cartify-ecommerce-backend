@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,8 @@ public class ProductController {
 
     private final IProductService productService;
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ProductDTO.ProductResponse> addProduct(
             @Valid @RequestBody ProductDTO.CreateProductRequest request) {
@@ -29,6 +32,8 @@ public class ProductController {
                 .body(productService.addProduct(request));
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductDTO.ProductResponse> updateProduct(
             @Valid @RequestBody ProductDTO.UpdateProductRequest request,
@@ -39,6 +44,8 @@ public class ProductController {
         );
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(
             @PathVariable @Positive Long productId) {
