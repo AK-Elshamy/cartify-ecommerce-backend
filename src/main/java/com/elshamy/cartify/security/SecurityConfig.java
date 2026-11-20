@@ -31,13 +31,22 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/api/v1/auth/**", "/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/products/**", "/api/products/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/**", "/api/categories/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/images/**", "/api/images/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/products/**", "/api/products/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/**", "/api/products/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**", "/api/products/**").hasRole("ADMIN")
+
+
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/products/**", "/api/products/**",
+                                "/api/v1/categories/**", "/api/categories/**",
+                                "/api/v1/images/**", "/api/images/**"
+                        ).permitAll()
+
+                        
+                        .requestMatchers("/api/v1/products/**", "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/categories/**", "/api/categories/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/images/**", "/api/images/**").hasRole("ADMIN")
+
+                        // 4. باقي الروابط (Cart, Addresses, Orders...) تتطلب تسجيل دخول
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

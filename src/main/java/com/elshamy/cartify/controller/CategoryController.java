@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,8 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategoryById(categoryId, pageable));
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CategoryDTO.CategoryDTOResponse> createCategory(
             @Valid @RequestBody CategoryDTO.CreateCategoryRequest request
@@ -36,12 +39,16 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.addCategory(request));
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategory(categoryId);
         return ResponseEntity.noContent().build();
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{categoryId}")
     public ResponseEntity<CategoryDTO.CategoryDTOResponse> updateCategory(@PathVariable Long categoryId, @Valid @RequestBody CategoryDTO.UpdateCategoryRequest request) {
         return ResponseEntity.ok(categoryService.updateCategory(categoryId, request));
