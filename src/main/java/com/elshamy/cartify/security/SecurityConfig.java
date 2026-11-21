@@ -41,7 +41,11 @@ public class SecurityConfig {
                                 "/api/v1/images/**", "/api/images/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/payments/webhook").permitAll()
-
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
 
                         .requestMatchers("/api/v1/products/**", "/api/products/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/categories/**", "/api/categories/**").hasRole("ADMIN")
