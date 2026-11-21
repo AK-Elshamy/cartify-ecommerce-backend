@@ -40,13 +40,14 @@ public class SecurityConfig {
                                 "/api/v1/categories/**", "/api/categories/**",
                                 "/api/v1/images/**", "/api/images/**"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/payments/webhook").permitAll()
 
-                        
+
                         .requestMatchers("/api/v1/products/**", "/api/products/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/categories/**", "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/images/**", "/api/images/**").hasRole("ADMIN")
 
-                        // 4. باقي الروابط (Cart, Addresses, Orders...) تتطلب تسجيل دخول
+
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
